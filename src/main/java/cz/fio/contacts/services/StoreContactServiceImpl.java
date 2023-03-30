@@ -17,17 +17,14 @@ public class StoreContactServiceImpl implements StoreContactService {
 
     @Override
     public List<Contact> getAllContacts() {
-        CSVReader reader;
         List<Contact> contacts = new ArrayList<>();
 
         try {
-            FileReader fileReader = new FileReader("contacts.csv", Charset.forName("Cp1250"));
+            CSVReader reader = new CSVReader(new FileReader("contacts.csv", Charset.forName("Cp1250")));
+            List<String[]> csvBody = reader.readAll();
 
-            reader = new CSVReader(fileReader);
-            String[] nextLine;
-
-            while ((nextLine = reader.readNext()) != null) {
-                contacts.add(new Contact(nextLine[0], nextLine[1], nextLine[2]));
+            for (String[] value : csvBody) {
+                contacts.add(new Contact(value[0], value[1], value[2]));
             }
             reader.close();
 
@@ -52,11 +49,7 @@ public class StoreContactServiceImpl implements StoreContactService {
                 }
             }
 
-            String[] newLine = new String[3];
-            newLine[0] = contact.getFirstName();
-            newLine[1] = contact.getLastName();
-            newLine[2] = contact.getEmail();
-
+            String[] newLine = {contact.getFirstName(), contact.getLastName(), contact.getEmail()};
             csvBody.add(newLine);
 
             CSVWriter writer = new CSVWriter(new FileWriter("contacts.csv", Charset.forName("Cp1250")));
@@ -68,7 +61,7 @@ public class StoreContactServiceImpl implements StoreContactService {
             e.printStackTrace();
             return null;
         }
-        return contact; // just return contact object for distinguish error state
+        return contact;
     }
 
 }

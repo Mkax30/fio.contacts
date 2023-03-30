@@ -27,6 +27,9 @@ public class StoreContactController {
     @PostMapping("/contacts")
     public ResponseEntity<Contact> saveContact(@RequestBody Contact requestContact) {
         Contact contact = storeContactService.saveContact(requestContact);
+        if (contact == null) {
+            return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+        }
         return new ResponseEntity<>(contact, HttpStatus.CREATED);
     }
 
